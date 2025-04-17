@@ -1,5 +1,6 @@
 import { Customer } from "../../../generated/prisma";
 import prisma from "../../../shared/prisma";
+import { AppError } from "../../error/AppError";
 import { CustomerData } from "./customer.constant";
 
 const createCustomer = async (data: any) => {
@@ -15,17 +16,14 @@ const getAllCustomers = async () => {
 };
 
 const getCustomerById = async (id: string) => {
-  await prisma.customer.findUniqueOrThrow({
-    where: {
-      customerId: id,
-    },
-  });
-
   const result = await prisma.customer.findUnique({
     where: {
       customerId: id,
     },
   });
+  if (!result) {
+    throw new AppError(404, "Customer Not Found");
+  }
   return result;
 };
 
@@ -61,7 +59,7 @@ const deleteCustomerFromDb = async (id: string) => {
       customerId: id,
     },
   });
-//   return result;
+  //   return result;
 };
 
 export const CustomerService = {
@@ -69,5 +67,5 @@ export const CustomerService = {
   getAllCustomers,
   getCustomerById,
   updateCustomerById,
-  deleteCustomerFromDb
+  deleteCustomerFromDb,
 };
