@@ -1,6 +1,7 @@
-import { ServiceRecord, ServiceStatus } from "../../../generated/prisma";
+import { ServiceRecord, ServiceStatus } from "../../../../generated/prisma";
 import prisma from "../../../shared/prisma";
 import { subDays } from "date-fns";
+import { AppError } from "../../error/AppError";
 
 const createService = async (data: any) => {
   const { status = "pending", ...restData } = data;
@@ -20,17 +21,16 @@ const getAllService = async () => {
 };
 
 const getServiceById = async (id: string) => {
-  await prisma.serviceRecord.findUniqueOrThrow({
-    where: {
-      serviceId: id,
-    },
-  });
-
   const result = await prisma.serviceRecord.findUnique({
     where: {
       serviceId: id,
     },
   });
+
+  if (!result) {
+    throw new AppError(404, "Service Not Found");
+  }
+
   return result;
 };
 

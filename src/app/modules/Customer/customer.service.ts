@@ -1,4 +1,4 @@
-import { Customer } from "../../../generated/prisma";
+import { Customer } from "../../../../generated/prisma";
 import prisma from "../../../shared/prisma";
 import { AppError } from "../../error/AppError";
 import { CustomerData } from "./customer.constant";
@@ -21,9 +21,11 @@ const getCustomerById = async (id: string) => {
       customerId: id,
     },
   });
+
   if (!result) {
     throw new AppError(404, "Customer Not Found");
   }
+  
   return result;
 };
 

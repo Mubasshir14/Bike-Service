@@ -1,0 +1,51 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  customerId String   @id @default(uuid())
+  name       String
+  email      String   @unique
+  phone      String
+  createdAt  DateTime @default(now())
+  bikes      Bike[]
+
+  @@map("customers")
+}
+
+model Bike {
+  bikeId     String          @id @default(uuid())
+  brand      String
+  model      String
+  year       Int
+  customer   Customer        @relation(fields: [customerId], references: [customerId])
+  customerId String
+  services   ServiceRecord[]
+
+  @@map("bikes")
+}
+
+model ServiceRecord {
+  serviceId      String        @id @default(uuid())
+  bike           Bike          @relation(fields: [bikeId], references: [bikeId])
+  bikeId         String
+  serviceDate    DateTime
+  completionDate DateTime?
+  description    String
+  status         ServiceStatus @default(pending)
+
+  @@map("services")
+}
+
+enum ServiceStatus {
+  pending
+  in_progress
+  done
+}

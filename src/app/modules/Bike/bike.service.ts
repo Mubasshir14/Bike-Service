@@ -1,4 +1,5 @@
 import prisma from "../../../shared/prisma";
+import { AppError } from "../../error/AppError";
 
 const createBike = async (data: any) => {
   const result = await prisma.bike.create({
@@ -13,17 +14,16 @@ const getAllBikes = async () => {
 };
 
 const getSingleBike = async (id: string) => {
-  await prisma.bike.findUniqueOrThrow({
-    where: {
-      bikeId: id,
-    },
-  });
-
   const result = await prisma.bike.findUnique({
     where: {
       bikeId: id,
     },
   });
+
+  if (!result) {
+    throw new AppError(404, "Bike Not Found");
+  }
+
   return result;
 };
 

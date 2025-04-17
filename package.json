@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "prod": "NODE_ENV=production node dist/server.js",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
